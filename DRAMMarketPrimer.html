@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding the Memory Market</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,600;1,9..144,200&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:           #090c0e;
+    --surface:      #0f1316;
+    --border:       #1a2028;
+    --border-light: #222c34;
+    --text:         #c0ccd4;
+    --muted:        #3e5060;
+    --label:        #6a8898;
+    --green:        #34c97a;
+    --red:          #e84f4f;
+    --amber:        #eda030;
+    --accent:       #4dafcf;
+    --card-bg:      #0d1114;
+  }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+background: var(--bg);
+color: var(--text);
+font-family: 'DM Mono', monospace;
+font-size: 13px;
+min-height: 100vh;
+}
+
+body::before {
+content: '';
+position: fixed;
+inset: 0;
+background-image: radial-gradient(circle, rgba(77,175,207,0.07) 1px, transparent 1px);
+background-size: 28px 28px;
+pointer-events: none;
+z-index: 0;
+}
+
+body::after {
+content: '';
+position: fixed;
+inset: 0;
+background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%);
+pointer-events: none;
+z-index: 0;
+}
+
+.container {
+position: relative;
+z-index: 1;
+max-width: 760px;
+margin: 0 auto;
+padding: 48px 28px 96px;
+animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(10px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+margin-bottom: 40px;
+border-bottom: 1px solid var(--border);
+padding-bottom: 28px;
+display: flex;
+justify-content: space-between;
+align-items: flex-end;
+flex-wrap: wrap;
+gap: 20px;
+}
+
+.fund-label {
+font-size: 9.5px;
+letter-spacing: 0.22em;
+color: var(--muted);
+text-transform: uppercase;
+margin-bottom: 10px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.fund-label::before {
+content: '';
+display: inline-block;
+width: 16px;
+height: 1px;
+background: var(--accent);
+opacity: 0.6;
+}
+
+.fund-title {
+font-family: 'Fraunces', serif;
+font-size: 30px;
+font-weight: 200;
+color: #dde8ee;
+letter-spacing: -0.02em;
+line-height: 1.15;
+margin-bottom: 5px;
+}
+
+.fund-subtitle {
+font-size: 10.5px;
+color: var(--muted);
+letter-spacing: 0.06em;
+max-width: 380px;
+line-height: 1.6;
+}
+
+.refresh-btn {
+background: transparent;
+border: 1px solid var(--border-light);
+color: var(--accent);
+font-family: 'DM Mono', monospace;
+font-size: 10.5px;
+padding: 6px 16px;
+cursor: pointer;
+letter-spacing: 0.08em;
+text-decoration: none;
+display: inline-block;
+transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.refresh-btn:hover {
+border-color: var(--accent);
+background: rgba(77,175,207,0.07);
+}
+
+.section-label {
+font-size: 9.5px;
+letter-spacing: 0.18em;
+color: var(--label);
+text-transform: uppercase;
+margin-bottom: 14px;
+padding-left: 14px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.section-label::after {
+content: '';
+flex: 1;
+height: 1px;
+background: var(--border);
+}
+
+section {
+margin-top: 40px;
+}
+
+.section-num {
+color: var(--accent);
+margin-right: 6px;
+}
+
+h2 {
+font-family: 'Fraunces', serif;
+font-size: 19px;
+font-weight: 300;
+color: #dde8ee;
+letter-spacing: -0.01em;
+line-height: 1.4;
+margin-bottom: 14px;
+padding-left: 14px;
+}
+
+p {
+font-size: 12.5px;
+line-height: 1.85;
+color: var(--text);
+padding-left: 14px;
+padding-right: 4px;
+margin-bottom: 12px;
+}
+
+p:last-child { margin-bottom: 0; }
+
+p strong, li strong {
+color: #dde8ee;
+font-weight: 500;
+}
+
+ul {
+padding-left: 14px;
+margin-bottom: 12px;
+list-style: none;
+}
+
+li {
+font-size: 12.5px;
+line-height: 1.85;
+color: var(--text);
+position: relative;
+padding-left: 18px;
+margin-bottom: 10px;
+}
+li::before {
+content: '—';
+position: absolute;
+left: 0;
+color: var(--accent);
+opacity: 0.6;
+}
+li:last-child { margin-bottom: 0; }
+
+.callout {
+background: var(--card-bg);
+border: 1px solid var(--border);
+border-left: 2px solid var(--accent);
+padding: 14px 18px;
+margin: 16px 0 16px 14px;
+font-size: 12px;
+line-height: 1.8;
+color: var(--label);
+}
+
+.glossary-wrap {
+padding-left: 14px;
+overflow-x: auto;
+}
+
+table.glossary {
+width: 100%;
+border-collapse: collapse;
+background: var(--card-bg);
+border: 1px solid var(--border);
+margin-top: 4px;
+}
+table.glossary th, table.glossary td {
+text-align: left;
+padding: 10px 14px;
+font-size: 11.5px;
+line-height: 1.7;
+border-bottom: 1px solid var(--border);
+vertical-align: top;
+}
+table.glossary th {
+font-size: 9.5px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--muted);
+border-bottom: 1px solid var(--border-light);
+}
+table.glossary td:first-child {
+color: var(--accent);
+font-weight: 500;
+white-space: nowrap;
+width: 160px;
+}
+table.glossary td:last-child { color: var(--label); }
+table.glossary tr:last-child td { border-bottom: none; }
+
+.footer-note {
+margin-top: 40px;
+font-size: 10px;
+color: var(--muted);
+line-height: 1.8;
+border-top: 1px solid var(--border);
+padding-top: 18px;
+padding-left: 14px;
+letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+.container { padding: 24px 14px 64px; }
+.fund-title { font-size: 22px; }
+.header { flex-direction: column; align-items: flex-start; gap: 14px; }
+table.glossary td:first-child { width: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="fund-label">Learn the Market</div>
+      <div class="fund-title">Understanding the<br>Memory Market</div>
+      <div class="fund-subtitle">A primer for the Roundhill Memory ETF (DRAM), written for readers new to semiconductors.</div>
+    </div>
+    <a href="DRAMInvestmentBreakdown.html" class="refresh-btn">← Back to Dashboard</a>
+  </div>
+
+  <section>
+    <div class="section-label"><span class="section-num">01</span>Why Everyone Suddenly Cares About Memory Chips</div>
+    <p>AI has turned memory chips — usually a sleepy, cyclical corner of tech — into one of the tightest bottlenecks in the entire AI buildout. High-Bandwidth Memory (HBM), the specialized memory stacked onto AI GPUs, is sold out industry-wide through the end of 2026, with its total addressable market projected to reach roughly $100 billion by 2028.</p>
+    <p>The scramble for HBM capacity is squeezing supply everywhere else too: costs for ordinary server DRAM roughly doubled in the first quarter of 2026 alone, with a roughly fourfold increase expected for the full year. Industry analysts call this the <strong>"memory wall"</strong> — the point where AI compute (GPUs) has scaled faster than the memory bandwidth needed to feed it, making memory, not raw processing power, the binding constraint on how fast AI systems can be built.</p>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="section-num">02</span>The Memory Family Tree</div>
+    <p>Not all memory chips do the same job. A quick map:</p>
+    <ul>
+      <li><strong>DRAM</strong> (Dynamic Random-Access Memory) — the fast, short-term working memory in every computer, phone, and server. Holds data the processor is actively using; loses everything when powered off.</li>
+      <li><strong>NAND flash</strong> — permanent storage. The chip inside SSDs, USB drives, and phone storage; keeps data with the power off.</li>
+      <li><strong>HBM</strong> (High-Bandwidth Memory) — a specialized, stacked variant of DRAM, physically bonded on top of AI accelerator chips to feed them data fast enough. Commands roughly a 5-6x price premium over equivalent-capacity ordinary DRAM because of the complex 3D-stacking manufacturing process. This is the product at the center of the current supercycle.</li>
+      <li><strong>NOR flash</strong> — an older, slower flash type still used where rock-solid reliability matters more than speed: automotive, industrial, and embedded electronics.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="section-num">03</span>Who Actually Makes This Stuff</div>
+    <p>DRAM is one of the purest oligopolies in tech: as of Q2 2026, Samsung holds roughly 39% of the market, SK hynix about 26%, and Micron about 25% — three companies control almost the entire supply. HBM is even more concentrated: SK hynix leads with about 58% share, with Samsung and Micron splitting most of the remainder at roughly 21% each (Q1 2026).</p>
+    <p>NAND flash is far more fragmented: Samsung (~28%), SK hynix (~19%), Kioxia (~14%), Micron (~13%), and Western Digital/SanDisk (~13%) all compete, alongside China's YMTC (not held in this fund).</p>
+    <p>Worth watching: <strong>CXMT</strong> (ChangXin Memory Technologies), a state-backed Chinese DRAM maker, has climbed the DRAM rankings unusually fast in 2026 — a sign that China is trying to build domestic memory self-sufficiency, which is both a competitive and geopolitical story.</p>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="section-num">04</span>The Memory Cycle: Historically Brutal Booms and Busts</div>
+    <p>Memory chips are close to a commodity: a Samsung DRAM chip and an SK hynix DRAM chip of the same spec are largely interchangeable, so price is set by industry-wide supply and demand rather than brand loyalty.</p>
+    <p>That creates a classic boom-bust pattern: building new fab capacity takes 1-2 years, so producers tend to over-invest when prices are high (adding supply that arrives just as the boom fades) and under-invest when prices are low (leaving the market short when demand next picks up). This lag is why memory stocks have historically been some of the most volatile in all of technology, prone to swinging between shortage-driven price spikes and gluts that crush margins.</p>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="section-num">05</span>Why This Cycle Might Be Different (Or Might Not)</div>
+    <p>The AI-driven HBM boom is genuinely structural in a way past cycles weren't: HBM's manufacturing complexity and pricing premium mean makers are dedicating capacity to it that would otherwise have gone to ordinary commodity DRAM, tightening supply across the whole market simultaneously — which is why even non-AI DRAM prices have surged alongside HBM. Some industry analysts (Deloitte among them) think this crunch may not meaningfully ease until 2029.</p>
+    <div class="callout">That said, treat this with healthy skepticism: every previous memory supercycle has eventually ended the same way, with capacity catching up to demand and prices collapsing. The AI story may delay or reshape that pattern — it has not repealed it.</div>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="section-num">06</span>The Bottleneck Behind the Bottleneck</div>
+    <p>Even when a company has enough raw memory chips, HBM has to be physically stacked and bonded onto GPUs using advanced packaging techniques (commonly referred to as CoWoS-class processes), a process dominated by Taiwan Semiconductor Manufacturing Co. (TSMC). And no advanced memory or logic chip gets made at all without EUV lithography machines, which only ASML makes.</p>
+    <p>These upstream chokepoints mean equipment and foundry companies are often better leading indicators of the memory cycle than the memory makers themselves — an equipment order placed today typically doesn't turn into shipped capacity for 1-2 years, which is exactly why this dashboard tracks TSM, ASML, Applied Materials (AMAT), Lam Research (LRCX), and KLA Corp (KLA) alongside the memory makers.</p>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="section-num">07</span>How This Fund Is Actually Built</div>
+    <p>Unlike a simple "buy the memory stocks" basket, DRAM gets most of its exposure through total-return swaps rather than owning shares outright, collateralized by US Treasury bills — which is why its disclosed holdings add up to roughly 125% of net asset value rather than 100%. See the <a href="https://github.com/coreycousins/DRAM-Breakdown#how-dram-uses-swaps" style="color:var(--accent)">main dashboard's README</a> for the full mechanics.</p>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="section-num">08</span>Risks and Things Worth Watching</div>
+    <ul>
+      <li><strong>Cyclicality hasn't been abolished.</strong> This is still fundamentally a boom-bust commodity market. A capacity overbuild, or any pause in AI infrastructure spending, could turn today's shortage into tomorrow's glut.</li>
+      <li><strong>Customer concentration.</strong> A handful of hyperscalers (Microsoft, Google, Amazon, Meta) drive most of the incremental demand for AI memory. A guidance cut from any one of them on data-center capex can move memory stocks sharply.</li>
+      <li><strong>Geopolitics.</strong> Nearly every major producer sits in Korea, Taiwan, Japan, or China. Export controls, tariffs, and China's state-backed push for memory self-sufficiency (CXMT) are live risks baked directly into this fund's country exposure.</li>
+      <li><strong>Concentration within the fund itself.</strong> The top three issuers (Samsung, Micron, SK hynix) make up roughly three-quarters of DRAM's disclosed economic exposure.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="section-num">09</span>Keeping Up With This Market</div>
+    <p>This dashboard's "Supply Chain &amp; Equipment" indicator row gives a daily read on sentiment. Worth checking in on periodically, even though they aren't live-tracked here: TrendForce/DRAMeXchange contract-price reports for DRAM and NAND, monthly Korea and Taiwan semiconductor export statistics (both economies are dominated by this industry, making trade data a real-time demand proxy), the SEMI Book-to-Bill ratio (industry-wide equipment orders vs. billings), and hyperscaler capex guidance on quarterly earnings calls.</p>
+  </section>
+
+  <section>
+    <div class="section-label"><span class="section-num">10</span>Glossary</div>
+    <div class="glossary-wrap">
+    <table class="glossary">
+      <tr><th>Term</th><th>Meaning</th></tr>
+      <tr><td>DRAM</td><td>Dynamic Random-Access Memory — the fast, short-term memory chip in every computer, phone, and server that temporarily holds data the processor is actively using. Loses its contents when powered off.</td></tr>
+      <tr><td>NAND</td><td>A type of flash memory that stores data permanently (unlike DRAM) — the chip inside SSDs, USB drives, and phone storage.</td></tr>
+      <tr><td>HBM</td><td>High-Bandwidth Memory — a stacked, high-speed variant of DRAM built specifically for AI accelerators (like Nvidia GPUs), where moving huge amounts of data quickly is the bottleneck. Currently the highest-margin, fastest-growing corner of the memory market.</td></tr>
+      <tr><td>NOR flash</td><td>An older, slower flash memory type still used where reliability matters more than speed — automotive, industrial, and embedded electronics.</td></tr>
+      <tr><td>Fabless</td><td>A chip company (e.g. GigaDevice, Phison) that designs chips but outsources actual manufacturing to a foundry, rather than owning its own fabrication plants.</td></tr>
+      <tr><td>ADR</td><td>American Depositary Receipt — a US-traded certificate representing shares of a foreign company (e.g. SK hynix's SKHY), letting US investors trade it without a foreign brokerage account.</td></tr>
+      <tr><td>NAV</td><td>Net Asset Value — the fund's total assets minus liabilities, divided by shares outstanding; effectively the fund's "fair value" per share, which its market price tracks closely for an ETF.</td></tr>
+      <tr><td>Expense ratio</td><td>The fund's annual management fee, expressed as a % of assets (DRAM's is 0.65%/year), deducted automatically from NAV rather than billed separately.</td></tr>
+      <tr><td>Total-return swap</td><td>A derivative contract where the fund receives the full return (price moves + dividends) of a stock from a counterparty (here, Goldman Sachs — the "GS" in the swap tickers), without directly owning the shares. Lets the fund get equity-like exposure to hard-to-access or restricted stocks.</td></tr>
+      <tr><td>Notional exposure</td><td>The economic size of a swap position — i.e. how much stock-price movement the fund is exposed to — as opposed to how much cash it actually put up for it.</td></tr>
+      <tr><td>Collateral</td><td>Assets (here, US Treasury bills) posted to back a swap obligation, in case the fund owes money to its swap counterparty. This is why DRAM holds so many T-bills despite being a memory-stock fund.</td></tr>
+      <tr><td>Modified market-cap weighting</td><td>A weighting scheme based on company size (bigger companies get bigger weights) but with adjustments — here, a 25% cap on any single issuer — to avoid excessive concentration.</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <div class="footer-note">
+    Sources: Counterpoint Research (DRAM/NAND/HBM market share), TrendForce (memory wall / contract pricing), Deloitte Insights (chip crunch outlook), SK hynix Newsroom (2026 market outlook).
+    Figures as of September 2026 and will move as the market does — this page is a static primer and won't auto-update the way the dashboard does.
+    For informational use only — not investment advice.
+  </div>
+
+</div>
+
+</body>
+</html>
