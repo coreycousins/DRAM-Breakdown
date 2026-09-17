@@ -19,6 +19,11 @@
     --amber:        #eda030;
     --accent:       #4dafcf;
     --card-bg:      #0d1114;
+    --series-1:     #3987e5;
+    --series-2:     #d95926;
+    --series-3:     #199e70;
+    --series-4:     #c98500;
+    --series-5:     #d55181;
   }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -218,6 +223,45 @@ line-height: 1.8;
 color: var(--label);
 }
 
+figure.diagram {
+margin: 18px 0 24px 14px;
+}
+.diagram-scroll {
+overflow-x: auto;
+}
+figure.diagram svg {
+display: block;
+width: 100%;
+height: auto;
+}
+figure.diagram figcaption {
+margin-top: 10px;
+font-size: 10.5px;
+color: var(--muted);
+line-height: 1.7;
+letter-spacing: 0.01em;
+}
+.chart-legend {
+display: flex;
+flex-wrap: wrap;
+gap: 6px 18px;
+margin-top: 12px;
+padding-left: 2px;
+}
+.chart-legend-item {
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 10.5px;
+color: var(--label);
+}
+.chart-legend-dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+flex-shrink: 0;
+}
+
 .glossary-wrap {
 padding-left: 14px;
 overflow-x: auto;
@@ -301,12 +345,109 @@ table.glossary td:first-child { width: auto; }
       <li><strong>HBM</strong> (High-Bandwidth Memory) — a specialized, stacked variant of DRAM, physically bonded on top of AI accelerator chips to feed them data fast enough. Commands roughly a 5-6x price premium over equivalent-capacity ordinary DRAM because of the complex 3D-stacking manufacturing process. This is the product at the center of the current supercycle.</li>
       <li><strong>NOR flash</strong> — an older, slower flash type still used where rock-solid reliability matters more than speed: automotive, industrial, and embedded electronics.</li>
     </ul>
+
+    <figure class="diagram">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 700 232" style="min-width:560px" role="img" aria-label="Tree diagram: Memory & Storage Chips split into Volatile (DRAM, HBM) and Non-Volatile (NAND flash, NOR flash); HBM is highlighted as a specialized, AI-focused variant of DRAM.">
+          <line x1="350" y1="48" x2="350" y2="65" stroke="var(--border-light)" stroke-width="1.5"/>
+          <line x1="175" y1="65" x2="525" y2="65" stroke="var(--border-light)" stroke-width="1.5"/>
+          <line x1="175" y1="65" x2="175" y2="92" stroke="var(--border-light)" stroke-width="1.5"/>
+          <line x1="525" y1="65" x2="525" y2="92" stroke="var(--border-light)" stroke-width="1.5"/>
+
+          <line x1="175" y1="132" x2="175" y2="150" stroke="var(--border-light)" stroke-width="1.5"/>
+          <line x1="90" y1="150" x2="260" y2="150" stroke="var(--border-light)" stroke-width="1.5"/>
+          <line x1="90" y1="150" x2="90" y2="172" stroke="var(--border-light)" stroke-width="1.5"/>
+          <line x1="260" y1="150" x2="260" y2="172" stroke="var(--border-light)" stroke-width="1.5"/>
+
+          <line x1="525" y1="132" x2="525" y2="150" stroke="var(--border-light)" stroke-width="1.5"/>
+          <line x1="440" y1="150" x2="610" y2="150" stroke="var(--border-light)" stroke-width="1.5"/>
+          <line x1="440" y1="150" x2="440" y2="172" stroke="var(--border-light)" stroke-width="1.5"/>
+          <line x1="610" y1="150" x2="610" y2="172" stroke="var(--border-light)" stroke-width="1.5"/>
+
+          <rect x="240" y="10" width="220" height="38" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="350" y="34" text-anchor="middle" font-size="13" fill="#dde8ee" font-family="DM Mono, monospace">Memory &amp; Storage Chips</text>
+
+          <rect x="95" y="92" width="160" height="40" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="175" y="109" text-anchor="middle" font-size="12" fill="var(--text)" font-family="DM Mono, monospace">Volatile</text>
+          <text x="175" y="123" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">loses data when off</text>
+
+          <rect x="445" y="92" width="160" height="40" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="525" y="109" text-anchor="middle" font-size="12" fill="var(--text)" font-family="DM Mono, monospace">Non-Volatile</text>
+          <text x="525" y="123" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">keeps data with power off</text>
+
+          <rect x="15" y="172" width="150" height="50" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="90" y="193" text-anchor="middle" font-size="12" fill="var(--text)" font-family="DM Mono, monospace">DRAM</text>
+          <text x="90" y="207" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">everyday working memory</text>
+
+          <rect x="185" y="172" width="150" height="50" rx="4" fill="var(--card-bg)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="260" y="193" text-anchor="middle" font-size="12" fill="var(--accent)" font-family="DM Mono, monospace">HBM</text>
+          <text x="260" y="207" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">AI-specialized, stacked</text>
+
+          <rect x="365" y="172" width="150" height="50" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="440" y="193" text-anchor="middle" font-size="12" fill="var(--text)" font-family="DM Mono, monospace">NAND flash</text>
+          <text x="440" y="207" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">SSDs, phone storage</text>
+
+          <rect x="535" y="172" width="150" height="50" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="610" y="193" text-anchor="middle" font-size="12" fill="var(--text)" font-family="DM Mono, monospace">NOR flash</text>
+          <text x="610" y="207" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">auto &amp; embedded</text>
+        </svg>
+      </div>
+      <figcaption>The memory family tree — HBM (highlighted) is a specialized, high-cost variant of ordinary DRAM built for AI accelerators, not a separate product category.</figcaption>
+    </figure>
   </section>
 
   <section>
     <div class="section-label"><span class="section-num">03</span>Who Actually Makes This Stuff</div>
     <p>DRAM is one of the purest oligopolies in tech: as of Q2 2026, Samsung holds roughly 39% of the market, SK hynix about 26%, and Micron about 25% — three companies control almost the entire supply. HBM is even more concentrated: SK hynix leads with about 58% share, with Samsung and Micron splitting most of the remainder at roughly 21% each (Q1 2026).</p>
     <p>NAND flash is far more fragmented: Samsung (~28%), SK hynix (~19%), Kioxia (~14%), Micron (~13%), and Western Digital/SanDisk (~13%) all compete, alongside China's YMTC (not held in this fund).</p>
+
+    <figure class="diagram">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 620 178" style="min-width:480px" role="img" aria-label="Stacked bar chart: DRAM market share is Samsung 39%, SK hynix 26%, Micron 25%, Other 10%. HBM market share is SK hynix 58%, Samsung 21%, Micron 21%. NAND market share is Samsung 28%, SK hynix 19%, Kioxia 14%, Micron 13%, Western Digital 13%, Other 13%. DRAM and HBM are concentrated in three players; NAND is more fragmented.">
+          <text x="0" y="30" font-size="11" fill="var(--label)" font-family="DM Mono, monospace">DRAM</text>
+          <rect x="66"    y="14" width="214.5" height="24" rx="3" fill="var(--series-1)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="280.5" y="14" width="143"   height="24" rx="3" fill="var(--series-2)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="423.5" y="14" width="137.5" height="24" rx="3" fill="var(--series-3)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="561"   y="14" width="55"    height="24" rx="3" fill="var(--muted)"    stroke="var(--bg)" stroke-width="2"/>
+          <text x="173.25" y="50" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">39%</text>
+          <text x="352"    y="50" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">26%</text>
+          <text x="492.25" y="50" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">25%</text>
+          <text x="588.5"  y="50" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">10%</text>
+
+          <text x="0" y="88" font-size="11" fill="var(--label)" font-family="DM Mono, monospace">HBM</text>
+          <rect x="66"    y="72" width="319"   height="24" rx="3" fill="var(--series-2)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="385"   y="72" width="115.5" height="24" rx="3" fill="var(--series-1)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="500.5" y="72" width="115.5" height="24" rx="3" fill="var(--series-3)" stroke="var(--bg)" stroke-width="2"/>
+          <text x="225.5"  y="108" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">58%</text>
+          <text x="442.75" y="108" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">21%</text>
+          <text x="558.25" y="108" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">21%</text>
+
+          <text x="0" y="146" font-size="11" fill="var(--label)" font-family="DM Mono, monospace">NAND</text>
+          <rect x="66"    y="130" width="154"  height="24" rx="3" fill="var(--series-1)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="220"   y="130" width="104.5" height="24" rx="3" fill="var(--series-2)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="324.5" y="130" width="77"   height="24" rx="3" fill="var(--series-4)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="401.5" y="130" width="71.5" height="24" rx="3" fill="var(--series-3)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="473"   y="130" width="71.5" height="24" rx="3" fill="var(--series-5)" stroke="var(--bg)" stroke-width="2"/>
+          <rect x="544.5" y="130" width="71.5" height="24" rx="3" fill="var(--muted)"    stroke="var(--bg)" stroke-width="2"/>
+          <text x="143"    y="166" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">28%</text>
+          <text x="272.25" y="166" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">19%</text>
+          <text x="363"    y="166" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">14%</text>
+          <text x="437.25" y="166" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">13%</text>
+          <text x="508.75" y="166" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">13%</text>
+          <text x="580.25" y="166" text-anchor="middle" font-size="9.5" fill="var(--muted)" font-family="DM Mono, monospace">13%</text>
+        </svg>
+      </div>
+      <div class="chart-legend">
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--series-1)"></span>Samsung</div>
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--series-2)"></span>SK hynix</div>
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--series-3)"></span>Micron</div>
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--series-4)"></span>Kioxia</div>
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--series-5)"></span>Western Digital</div>
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--muted)"></span>Other</div>
+      </div>
+      <figcaption>Disclosed market share by product line, Q1–Q2 2026 (Counterpoint Research). DRAM and HBM are concentrated among three players; NAND is far more fragmented.</figcaption>
+    </figure>
+
     <p>Worth watching: <strong>CXMT</strong> (ChangXin Memory Technologies), a state-backed Chinese DRAM maker, has climbed the DRAM rankings unusually fast in 2026 — a sign that China is trying to build domestic memory self-sufficiency, which is both a competitive and geopolitical story.</p>
   </section>
 
@@ -314,6 +455,33 @@ table.glossary td:first-child { width: auto; }
     <div class="section-label"><span class="section-num">04</span>The Memory Cycle: Historically Brutal Booms and Busts</div>
     <p>Memory chips are close to a commodity: a Samsung DRAM chip and an SK hynix DRAM chip of the same spec are largely interchangeable, so price is set by industry-wide supply and demand rather than brand loyalty.</p>
     <p>That creates a classic boom-bust pattern: building new fab capacity takes 1-2 years, so producers tend to over-invest when prices are high (adding supply that arrives just as the boom fades) and under-invest when prices are low (leaving the market short when demand next picks up). This lag is why memory stocks have historically been some of the most volatile in all of technology, prone to swinging between shortage-driven price spikes and gluts that crush margins.</p>
+
+    <figure class="diagram">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 640 220" style="min-width:480px" role="img" aria-label="Diagram of the memory boom-bust cycle: price spikes trigger new fab capacity orders, which take 1-2 years to arrive, at which point the flood of new supply crashes prices — illustrating why the build lag causes overshoot in both directions.">
+          <line x1="20" y1="115" x2="620" y2="115" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="3 4"/>
+
+          <path d="M20,120 C90,120 140,35 200,35 C260,35 300,65 325,110 C350,155 380,195 420,195 C460,195 500,155 540,125 C575,102 600,98 620,96"
+                fill="none" stroke="var(--accent)" stroke-width="2"/>
+
+          <line x1="200" y1="18" x2="420" y2="18" stroke="var(--label)" stroke-width="1"/>
+          <line x1="200" y1="14" x2="200" y2="22" stroke="var(--label)" stroke-width="1"/>
+          <line x1="420" y1="14" x2="420" y2="22" stroke="var(--label)" stroke-width="1"/>
+          <text x="310" y="12" text-anchor="middle" font-size="10" fill="var(--label)" font-family="DM Mono, monospace">~1–2 year capacity build lag</text>
+
+          <circle cx="200" cy="35" r="4" fill="var(--amber)"/>
+          <text x="210" y="52" font-size="10.5" fill="var(--amber)" font-family="DM Mono, monospace">Price spike —</text>
+          <text x="210" y="65" font-size="10.5" fill="var(--amber)" font-family="DM Mono, monospace">capacity gets ordered</text>
+
+          <circle cx="420" cy="195" r="4" fill="var(--red)"/>
+          <text x="430" y="182" font-size="10.5" fill="var(--red)" font-family="DM Mono, monospace">Supply floods in —</text>
+          <text x="430" y="195" font-size="10.5" fill="var(--red)" font-family="DM Mono, monospace">prices crash</text>
+
+          <text x="612" y="212" text-anchor="end" font-size="10" fill="var(--muted)" font-family="DM Mono, monospace">time →</text>
+        </svg>
+      </div>
+      <figcaption>The memory cycle: fab capacity takes 1–2 years to build, so producers over-order at the top and under-order at the bottom — turning ordinary demand swings into price spikes and crashes.</figcaption>
+    </figure>
   </section>
 
   <section>
@@ -326,6 +494,56 @@ table.glossary td:first-child { width: auto; }
     <div class="section-label"><span class="section-num">06</span>The Bottleneck Behind the Bottleneck</div>
     <p>Even when a company has enough raw memory chips, HBM has to be physically stacked and bonded onto GPUs using advanced packaging techniques (commonly referred to as CoWoS-class processes), a process dominated by Taiwan Semiconductor Manufacturing Co. (TSMC). And no advanced memory or logic chip gets made at all without EUV lithography machines, which only ASML makes.</p>
     <p>These upstream chokepoints mean equipment and foundry companies are often better leading indicators of the memory cycle than the memory makers themselves — an equipment order placed today typically doesn't turn into shipped capacity for 1-2 years, which is exactly why this dashboard tracks TSM, ASML, Applied Materials (AMAT), Lam Research (LRCX), and KLA Corp (KLA) alongside the memory makers.</p>
+
+    <figure class="diagram">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 780 150" style="min-width:620px" role="img" aria-label="Flow diagram: Equipment Makers (ASML, Applied Materials, Lam Research, KLA) feed Memory Fabs, which produce die that go through Advanced Packaging (TSMC's CoWoS, highlighted as the bottleneck), then to AI Accelerators (Nvidia GPUs), then to Hyperscaler data centers.">
+          <defs>
+            <marker id="flowArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="var(--label)"/>
+            </marker>
+          </defs>
+
+          <line x1="130" y1="75" x2="167" y2="75" stroke="var(--label)" stroke-width="1.5" marker-end="url(#flowArrow)"/>
+          <line x1="290" y1="75" x2="327" y2="75" stroke="var(--label)" stroke-width="1.5" marker-end="url(#flowArrow)"/>
+          <line x1="450" y1="75" x2="487" y2="75" stroke="var(--label)" stroke-width="1.5" marker-end="url(#flowArrow)"/>
+          <line x1="610" y1="75" x2="647" y2="75" stroke="var(--label)" stroke-width="1.5" marker-end="url(#flowArrow)"/>
+
+          <text x="150" y="128" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">lithography &amp; etch tools</text>
+          <text x="310" y="128" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">memory die</text>
+          <text x="470" y="128" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">packaged GPU module</text>
+          <text x="630" y="128" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="DM Mono, monospace">deployed servers</text>
+
+          <rect x="10" y="40" width="120" height="70" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="70" y="70" text-anchor="middle" font-size="11.5" fill="var(--text)" font-family="DM Mono, monospace">Equipment</text>
+          <text x="70" y="84" text-anchor="middle" font-size="11.5" fill="var(--text)" font-family="DM Mono, monospace">Makers</text>
+          <text x="70" y="100" text-anchor="middle" font-size="8.5" fill="var(--muted)" font-family="DM Mono, monospace">ASML · AMAT · LRCX · KLA</text>
+
+          <rect x="170" y="40" width="120" height="70" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="230" y="70" text-anchor="middle" font-size="11.5" fill="var(--text)" font-family="DM Mono, monospace">Memory Fab</text>
+          <text x="230" y="90" text-anchor="middle" font-size="8.5" fill="var(--muted)" font-family="DM Mono, monospace">Samsung · SK hynix</text>
+          <text x="230" y="102" text-anchor="middle" font-size="8.5" fill="var(--muted)" font-family="DM Mono, monospace">Micron</text>
+
+          <line x1="390" y1="24" x2="390" y2="39" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="390" y="16" text-anchor="middle" font-size="9.5" fill="var(--accent)" letter-spacing="0.08em" font-family="DM Mono, monospace">BOTTLENECK</text>
+          <rect x="330" y="40" width="120" height="70" rx="4" fill="var(--card-bg)" stroke="var(--accent)" stroke-width="2"/>
+          <text x="390" y="68" text-anchor="middle" font-size="11.5" fill="var(--accent)" font-family="DM Mono, monospace">Advanced</text>
+          <text x="390" y="82" text-anchor="middle" font-size="11.5" fill="var(--accent)" font-family="DM Mono, monospace">Packaging</text>
+          <text x="390" y="98" text-anchor="middle" font-size="8.5" fill="var(--muted)" font-family="DM Mono, monospace">TSMC · CoWoS</text>
+
+          <rect x="490" y="40" width="120" height="70" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="550" y="70" text-anchor="middle" font-size="11.5" fill="var(--text)" font-family="DM Mono, monospace">AI</text>
+          <text x="550" y="84" text-anchor="middle" font-size="11.5" fill="var(--text)" font-family="DM Mono, monospace">Accelerator</text>
+          <text x="550" y="100" text-anchor="middle" font-size="8.5" fill="var(--muted)" font-family="DM Mono, monospace">Nvidia GPU</text>
+
+          <rect x="650" y="40" width="120" height="70" rx="4" fill="var(--card-bg)" stroke="var(--border-light)"/>
+          <text x="710" y="70" text-anchor="middle" font-size="11.5" fill="var(--text)" font-family="DM Mono, monospace">Hyperscaler</text>
+          <text x="710" y="90" text-anchor="middle" font-size="8.5" fill="var(--muted)" font-family="DM Mono, monospace">data center</text>
+          <text x="710" y="102" text-anchor="middle" font-size="8.5" fill="var(--muted)" font-family="DM Mono, monospace">deployment</text>
+        </svg>
+      </div>
+      <figcaption>Even with enough memory chips, HBM has to clear a narrow set of chokepoints before it reaches an AI data center — advanced packaging (TSMC's CoWoS) is currently the tightest one.</figcaption>
+    </figure>
   </section>
 
   <section>
