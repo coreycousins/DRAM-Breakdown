@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roundhill Memory ETF — Daily Attribution v1.2.0</title>
+<title>Roundhill Memory ETF — Daily Attribution v1.3.0</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,600;1,9..144,200&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1056,7 +1056,7 @@ dbg('6. holdingsTable on window.load: ' + (tbl ? 'FOUND, childCount=' + tbl.chil
     <div class="header-left">
       <div class="fund-label">Portfolio Attribution</div>
       <div class="fund-title">Roundhill Memory ETF<br>DRAM</div>
-      <div class="fund-subtitle">Inside holdings · Daily movement breakdown · v1.2.0</div>
+      <div class="fund-subtitle">Inside holdings · Daily movement breakdown · v1.3.0</div>
     </div>
     <div class="header-right">
       <span class="last-updated" id="lastUpdated">—</span>
@@ -1184,12 +1184,14 @@ dbg('6. holdingsTable on window.load: ' + (tbl ? 'FOUND, childCount=' + tbl.chil
     <div class="top-row-item">
       <div class="summary-label">Total Value</div>
       <div class="position-value" id="positionValue">—</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:0.04em" id="positionValueCAD"></div>
     </div>
     <div class="top-row-divider"></div>
     <div class="top-row-item">
       <div class="summary-label">Total Gain / Loss</div>
       <div class="position-value" id="totalGainLoss">—</div>
       <div style="font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:0.04em" id="totalGainLossPct"></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:0.04em" id="totalGainLossCAD"></div>
     </div>
     <div class="top-row-divider"></div>
     <div class="top-row-item">
@@ -1528,6 +1530,7 @@ const priceData    = {};
 let sharesHeld = parseFloat(localStorage.getItem('sharesHeld')) || 0;
 let costPerShare = parseFloat(localStorage.getItem('costPerShare')) || 0;
 let navPrice = null;
+let usdCad = null; // CAD per 1 USD (Yahoo "CAD=X")
 
 function onSharesInput(val) {
   sharesHeld = parseFloat(val) || 0;
@@ -1557,6 +1560,12 @@ function formatUSD(val) {
   return (val >= 0 ? '+$' : '-$') + abs;
 }
 
+function formatCAD(val, signed) {
+  const abs = Math.abs(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const sign = signed ? (val >= 0 ? '+' : '-') : (val < 0 ? '-' : '');
+  return sign + 'C$' + abs;
+}
+
 function usdMove(contribPct) {
   if (!sharesHeld || !navPrice) return null;
   return sharesHeld * navPrice * (contribPct / 100);
@@ -1564,25 +1573,30 @@ function usdMove(contribPct) {
 
 function updatePositionBar(totalContrib) {
   const valueEl = document.getElementById('positionValue');
+  const cadEl   = document.getElementById('positionValueCAD');
   updateTotalGainLoss();
   if (!sharesHeld || !navPrice) {
     valueEl.textContent = '—';
     valueEl.className = 'position-value';
+    cadEl.textContent = '';
     return;
   }
   const totalValue = sharesHeld * navPrice;
   valueEl.textContent = '$' + totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   valueEl.className = 'position-value';
+  cadEl.textContent = usdCad ? formatCAD(totalValue * usdCad) + ' @ ' + usdCad.toFixed(4) : '';
 }
 
 // Total gain/loss vs. purchase price, valued at the same NAV as Total Value
 function updateTotalGainLoss() {
   const el  = document.getElementById('totalGainLoss');
   const pct = document.getElementById('totalGainLossPct');
+  const cad = document.getElementById('totalGainLossCAD');
   if (!sharesHeld || !costPerShare || !navPrice) {
     el.textContent = '—';
     el.className = 'position-value';
     pct.textContent = '';
+    cad.textContent = '';
     return;
   }
   const costBasis = sharesHeld * costPerShare;
@@ -1592,6 +1606,7 @@ function updateTotalGainLoss() {
   el.className = 'position-value' + (gain > 0 ? ' positive' : gain < 0 ? ' negative' : '');
   pct.textContent = (gainPct >= 0 ? '+' : '') + gainPct.toFixed(2) + '% · cost $' +
     costBasis.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  cad.textContent = usdCad ? formatCAD(gain * usdCad, true) : '';
 }
 
 function updatePositionBreakdown(totalGain, totalLoss) {
@@ -2904,6 +2919,20 @@ async function fetchFundNAV() {
   }
 }
 
+async function fetchUsdCad() {
+  try {
+    const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/CAD=X?interval=1d&range=1d`;
+    const j = JSON.parse(await proxyFetch(yahooUrl));
+    const price = j?.chart?.result?.[0]?.meta?.regularMarketPrice;
+    if (!price) throw new Error('no price');
+    usdCad = price;
+    render();
+    if (typeof dbg === 'function') dbg('USD/CAD: ' + price.toFixed(4));
+  } catch(e) {
+    if (typeof dbg === 'function') dbg('FAIL USD/CAD: ' + e.message);
+  }
+}
+
 // ── Indicator info (for click-to-explain tiles) ───────────────────────────────
 const INDICATOR_INFO = {
   '^SOX':  { label: 'PHLX Semiconductor Index', desc: "A widely-tracked benchmark of major US-listed semiconductor companies spanning chipmakers, equipment suppliers, and designers. A broad read on whether the whole sector is moving together, rather than one company's own news." },
@@ -2992,6 +3021,7 @@ if (sharesHeld) document.getElementById('sharesInput').value = sharesHeld;
 if (costPerShare) document.getElementById('costInput').value = costPerShare;
 render();
 fetchFundNAV();
+fetchUsdCad();
 fetchKeyIndicators();
 fetchAll();
 loadHistory();
